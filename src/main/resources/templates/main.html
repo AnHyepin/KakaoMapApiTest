@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>원, 선, 사각형, 다각형 표시하기</title>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=76a0fe903ba1edfcbd5b13403198d850"></script>
+
+    <style>
+        .customoverlay {position:relative;bottom:85px;border-radius:6px;border: 1px solid #ccc;border-bottom:2px solid #ddd;float:left;}
+        .customoverlay:nth-of-type(n) {border:0; box-shadow:0px 1px 2px #888;}
+        .customoverlay a {display:block;text-decoration:none;color:#000;text-align:center;border-radius:6px;font-size:14px;font-weight:bold;overflow:hidden;background: #d95050;background: #d95050 url(https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png) no-repeat right 14px center;}
+        .customoverlay .title {display:block;text-align:center;background:#fff;margin-right:35px;padding:10px 15px;font-size:14px;font-weight:bold;}
+        .customoverlay:after {content:'';position:absolute;margin-left:-12px;left:50%;bottom:-12px;width:22px;height:12px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/vertex_white.png')}
+
+
+        .overlaybox {position:relative;width:360px;height:350px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/box_movie.png') no-repeat;padding:15px 10px;}
+        .overlaybox div, ul {overflow:hidden;margin:0;padding:0;}
+        .overlaybox li {list-style: none;}
+        .overlaybox .boxtitle {color:#fff;font-size:16px;font-weight:bold;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/arrow_white.png') no-repeat right 120px center;margin-bottom:8px;}
+        .overlaybox .first {position:relative;width:247px;height:136px;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/thumb.png') no-repeat;margin-bottom:8px;}
+        .first .text {color:#fff;font-weight:bold;}
+        .first .triangle {position:absolute;width:48px;height:48px;top:0;left:0;background: url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/triangle.png') no-repeat; padding:6px;font-size:18px;}
+        .first .movietitle {position:absolute;width:100%;bottom:0;background:rgba(0,0,0,0.4);padding:7px 15px;font-size:14px;}
+        .overlaybox ul {width:247px;}
+        .overlaybox li {position:relative;margin-bottom:2px;background:#2b2d36;padding:5px 10px;color:#aaabaf;line-height: 1;}
+        .overlaybox li span {display:inline-block;}
+        .overlaybox li .number {font-size:16px;font-weight:bold;}
+        .overlaybox li .title {font-size:13px;}
+        .overlaybox ul .arrow {position:absolute;margin-top:8px;right:25px;width:5px;height:3px;background:url('https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/updown.png') no-repeat;}
+        .overlaybox li .up {background-position:0 -40px;}
+        .overlaybox li .down {background-position:0 -60px;}
+        .overlaybox li .count {position:absolute;margin-top:5px;right:15px;font-size:10px;}
+        .overlaybox li:hover {color:#fff;background:#d24545;}
+        .overlaybox li:hover .up {background-position:0 0px;}
+        .overlaybox li:hover .down {background-position:0 -20px;}
+    </style>
+</head>
+<body>
+<div id="map" style="width:100%;height:700px"></div>
+
+<script>
+
+    var mapContainer = document.getElementById('map'), // 지도를 표시할 div
+        mapOption = {
+            center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+            level: 2 // 지도의 확대 레벨
+        };
+
+    var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
+
+    // 지도에 표시할 원을 생성합니다
+    var circle = new kakao.maps.Circle({
+        center : new kakao.maps.LatLng(33.450701, 126.570667),  // 원의 중심좌표 입니다
+        radius: 50, // 미터 단위의 원의 반지름입니다
+        strokeWeight: 5, // 선의 두께입니다
+        strokeColor: '#75B8FA', // 선의 색깔입니다
+        strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
+        strokeStyle: 'dashed', // 선의 스타일 입니다
+        fillColor: '#CFE7FF', // 채우기 색깔입니다
+        fillOpacity: 0.7  // 채우기 불투명도 입니다
+    });
+
+    // 지도에 원을 표시합니다
+    circle.setMap(map);
+
+    var imageSrc = 'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png', // 마커이미지의 주소입니다
+        imageSize = new kakao.maps.Size(64, 69), // 마커이미지의 크기입니다
+        imageOption = {offset: new kakao.maps.Point(27, 69)}; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+    // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+    var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption),
+        markerPosition = new kakao.maps.LatLng(33.450701, 126.570667); // 마커가 표시될 위치입니다
+
+
+    // 마커를 생성합니다
+    var marker = new kakao.maps.Marker({
+        position: markerPosition,
+        image: markerImage // 마커이미지 설정
+    });
+
+    // 마커가 지도 위에 표시되도록 설정합니다
+    marker.setMap(map);
+
+
+    // 오버레이로 강아지 프로필 이미지 얹기
+    var profileOverlayContent = `
+        <div style="position: relative; width: 38px; height: 38px;">
+            <img src="/images/강아지.png" style="width: 100%; height: 100%; border-radius: 50%; border: 2px solid white;">
+        </div>
+    `;
+
+    // 프로필 이미지 오버레이 생성
+    var profileOverlay = new kakao.maps.CustomOverlay({
+        content: profileOverlayContent,
+        position: markerPosition,
+        yAnchor: 1.7, // 기존 0.5에서 0.8로 올려서 위로 이동
+        xAnchor: 0.6  // X축 중심 정렬
+    });
+    profileOverlay.setMap(map);
+
+    // 플러스 마크
+    // 플러스 마크 오버레이
+    var plusOverlayContent = `
+    <div id="plusOverlay" style="position: relative; width: 30px; height: 30px; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; cursor: pointer;">
+        <img src="/images/플러스.png" style="width: 100%; height: 100%; border-radius: 50%; border: 2px solid white;">
+        <span style="
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            text-shadow: 1px 1px 2px black;
+            pointer-events: none;
+        ">+9</span>
+    </div>
+`;
+
+    var plusOverlay = new kakao.maps.CustomOverlay({
+        content: plusOverlayContent,
+        position: markerPosition,
+        yAnchor: 2.0,
+        xAnchor: -0.5
+    });
+    plusOverlay.setMap(map);
+
+
+    // 장소보기
+    var content = '<div class="customoverlay">' +
+        '  <a href="https://map.kakao.com/link/map/11394059" target="_blank">' +
+        '    <span class="title">장소 보기</span>' +
+        '  </a>' +
+        '</div>';
+
+    // 커스텀 오버레이가 표시될 위치입니다
+    var position = new kakao.maps.LatLng(33.450701, 126.570667);
+
+    // 커스텀 오버레이를 생성합니다
+    var customOverlay = new kakao.maps.CustomOverlay({
+        map: map,
+        position: position,
+        content: content,
+        yAnchor: 1
+    });
+
+
+    /*
+    //목록
+    var content = '<div class="overlaybox">' +
+        '    <div class="boxtitle">금주 영화순위</div>' +
+        '    <div class="first">' +
+        '        <div class="triangle text">1</div>' +
+        '        <div class="movietitle text">드래곤 길들이기2</div>' +
+        '    </div>' +
+        '    <ul>' +
+        '        <li class="up">' +
+        '            <span class="number">2</span>' +
+        '            <span class="title">명량</span>' +
+        '            <span class="arrow up"></span>' +
+        '            <span class="count">2</span>' +
+        '        </li>' +
+        '        <li>' +
+        '            <span class="number">3</span>' +
+        '            <span class="title">해적(바다로 간 산적)</span>' +
+        '            <span class="arrow up"></span>' +
+        '            <span class="count">6</span>' +
+        '        </li>' +
+        '        <li>' +
+        '            <span class="number">4</span>' +
+        '            <span class="title">해무</span>' +
+        '            <span class="arrow up"></span>' +
+        '            <span class="count">3</span>' +
+        '        </li>' +
+        '        <li>' +
+        '            <span class="number">5</span>' +
+        '            <span class="title">안녕, 헤이즐</span>' +
+        '            <span class="arrow down"></span>' +
+        '            <span class="count">1</span>' +
+        '        </li>' +
+        '    </ul>' +
+        '</div>';
+
+    // 커스텀 오버레이가 표시될 위치입니다
+    var position = new kakao.maps.LatLng(33.450701, 126.570667);
+
+    // 커스텀 오버레이를 생성합니다
+    var customOverlay = new kakao.maps.CustomOverlay({
+        position: position,
+        content: content,
+        xAnchor: -0.3,
+        yAnchor: 0.8
+    });
+
+    // 커스텀 오버레이를 지도에 표시합니다
+    customOverlay.setMap(map);
+    */
+
+    // 영화 리스트 컨테이너 생성
+    var movieListContent = `
+    <div id="movieList" style="
+        position: absolute;
+        bottom: 80px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        padding: 15px;
+        display: none;
+        z-index: 100;
+        width: 250px;
+    ">
+        <h3 style="margin: 0 0 10px;">내 주변 뭉뭉이 리스트</h3>
+        <ul style="list-style: none; margin: 0; padding: 0;">
+            <li>뭉이</li>
+            <li>윤서</li>
+            <li>최윤서</li>
+            <li>융더</li>
+            <li>채윤뎌</li>
+        </ul>
+        <button id="closeList" style="
+            margin-top: 10px;
+            padding: 5px 10px;
+            background: #d95050;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        ">닫기</button>
+    </div>
+`;
+    document.body.insertAdjacentHTML('beforeend', movieListContent);
+
+    // 플러스 마크 클릭 이벤트
+    document.getElementById('plusOverlay').addEventListener('click', function () {
+        var movieList = document.getElementById('movieList');
+        movieList.style.display = 'block';
+    });
+
+    // 닫기 버튼 클릭 이벤트
+    document.getElementById('closeList').addEventListener('click', function () {
+        var movieList = document.getElementById('movieList');
+        movieList.style.display = 'none';
+    });
+
+</script>
+</body>
+</html>
