@@ -22,13 +22,13 @@ import java.util.Map;
 @Controller
 public class MainController {
 
-    @RequestMapping("/test")
+    @RequestMapping("/")
     public String root() {
         return "main";
     }
 
 
-    @RequestMapping("/")
+    @RequestMapping("/test")
     public String index() {
         return "check-out";
     }
